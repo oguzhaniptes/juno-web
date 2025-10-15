@@ -1,21 +1,50 @@
 import { NextResponse, NextRequest } from "next/server";
-// import type { NextRequest } from "next/server";
 
+// Public routes - accessible without authentication
+const publicRoutes = ["/login", "/main", "/redirect"];
+
+// Protected routes - require authentication
 const protectedRoutes = ["/", "/play"];
-const publicRoutes = ["/login", "/main"];
 
 export default async function middleware(request: NextRequest) {
-  // 2. Check if the current route is protected or public
   const path = request.nextUrl.pathname;
-  const isProtectedRoute = protectedRoutes.includes(path);
-  const isPublicRoute = publicRoutes.includes(path);
 
-  const token = request.cookies.get("token")?.value;
+  console.log(`[Middleware] Pathname: ${path} at ${new Date().toISOString()}`);
 
-  console.log(`[Middleware] Pathname: ${path} at ${new Date().toISOString()}`); // Zaman damgası ile log
-  console.log(`[Middleware] Token: ${token || "No token found"}`);
+  // Check if it's a public route first (exact match or starts with)
+  const isPublicRoute = publicRoutes.some((route) => {
+    return path === route || path.startsWith(route + "/");
+  });
 
-  if (isProtectedRoute && !token) {
+  if (isPublicRoute) {
+    console.log(`[Middleware] Public route - Access granted to ${path}`);
+    return NextResponse.next();
+  }
+
+  // Check for zkLogin auth data in cookies
+  const userId = request.cookies.get("user_id")?.value;
+  const salt = request.cookies.get("salt")?.value;
+  const maxEpoch = request.cookies.get("max_epoch")?.value;
+
+  const hasAuthData = Boolean(userId && salt && maxEpoch);
+
+  console.log(
+    `[Middleware] Auth Status: ${hasAuthData ? "Authenticated" : "Not authenticated"}`,
+  );
+
+  // Check if it's a protected route
+  const isProtectedRoute = protectedRoutes.some((route) => {
+    // Exact match for root path
+    if (route === "/") {
+      return path === "/";
+    }
+    // Prefix match for other routes
+    return path === route || path.startsWith(route + "/");
+  });
+
+  // Redirect to login if accessing protected route without auth
+  if (isProtectedRoute && !hasAuthData) {
+    console.log(`[Middleware] Redirecting to /login - No auth data found`);
     return NextResponse.redirect(new URL("/login", request.nextUrl));
   }
 
@@ -25,6 +54,14 @@ export default async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|.*\\.png$|favicon.ico|redirect).*)",
+    /*
+     * Match all request paths except:
+     * - api routes
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt (static files)
+     * - public files (images, etc.)
+     */
+    "/((?!api|_next/static|_next/image|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.svg$|.*\\.ico$|favicon.ico|sitemap.xml|robots.txt).*)",
   ],
 };

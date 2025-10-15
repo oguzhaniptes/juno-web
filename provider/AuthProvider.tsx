@@ -8,9 +8,22 @@ import {
   useEffect,
   useCallback,
 } from "react";
-import { useStorageState } from "@/hooks/use-storage-state";
-import { AuthData, AuthProvider, AuthProviderProps } from "@/types/auth";
+import {
+  AuthData,
+  AuthProvider,
+  AuthProviderProps,
+  ChangeCodeForUserZkProvider,
+} from "@/types/auth";
 import { redirectToAuthorization } from "@/constants/auth";
+import {
+  saveZkLoginData,
+  clearAllZkLoginData,
+  getPersistentData,
+  hasValidZkLoginSession,
+  syncAuthDataToCookies,
+  clearAuthCookies,
+} from "@/lib/storage";
+import { attachZkLoginDebugToWindow } from "@/lib/zklogin-debug";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
@@ -32,9 +45,43 @@ export function useSession() {
 }
 
 export function SessionProvider({ children }: PropsWithChildren) {
-  const [[isLoadingUserId, userId], setUserId] = useStorageState("user_id");
-  const [[isLoadingSalt, salt], setSalt] = useStorageState("salt");
-  const [isAuthLoading, setIsAuthLoading] = useState(false);
+  const [authData, setAuthData] = useState<AuthData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Initialize authentication state from localStorage/sessionStorage
+  const initializeAuthState = useCallback(() => {
+    if (typeof window === "undefined") {
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // Check if we have valid zkLogin session
+      if (hasValidZkLoginSession()) {
+        const persistentData = getPersistentData();
+        if (persistentData) {
+          setAuthData({
+            user_id: persistentData.user_id,
+            salt: persistentData.salt,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Failed to initialize auth state:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Initialize auth state from storage on mount
+  useEffect(() => {
+    initializeAuthState();
+
+    // Attach debug utilities to window in development
+    if (process.env.NODE_ENV === "development") {
+      attachZkLoginDebugToWindow();
+    }
+  }, [initializeAuthState]);
 
   // Handle OAuth callback on component mount
   useEffect(() => {
@@ -53,7 +100,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
     // If we have a code and provider, exchange it for user data
     if (code && provider) {
-      setIsAuthLoading(true);
+      setIsLoading(true);
       try {
         console.log(`Authenticating with ${provider}...`);
 
@@ -71,64 +118,84 @@ export function SessionProvider({ children }: PropsWithChildren) {
           }),
         });
 
-        const data = await resp.json();
-        console.log(`${provider} token response:`, data);
+        if (!resp.ok) {
+          throw new Error(`Token exchange failed: ${resp.statusText}`);
+        }
 
-        if (data.salt && data.user_id) {
-          setUserId(data.user_id);
-          setSalt(data.salt);
+        const data: ChangeCodeForUserZkProvider = await resp.json();
+        console.log(`${provider} token response received`);
+
+        if (data.salt && data.user_id && data.zk_payload) {
+          // Save zkLogin data following Sui SDK pattern:
+          // - Ephemeral data (keys, randomness) -> sessionStorage
+          // - Persistent data (user_id, salt, max_epoch) -> localStorage
+          saveZkLoginData(data.zk_payload, data.user_id, data.salt);
+
+          // Sync auth data to cookies for middleware access
+          syncAuthDataToCookies();
+
+          // Update auth state
+          setAuthData({
+            user_id: data.user_id,
+            salt: data.salt,
+          });
+
           console.log(`${provider} auth successful!`);
+          console.log("zkLogin data saved:");
+          console.log("- sessionStorage: ephemeral keys, randomness, nonce");
+          console.log("- localStorage: user_id, salt, max_epoch");
+          console.log("- cookies: user_id, salt, max_epoch (for middleware)");
 
-          // Clean up URL parameters
-          window.history.replaceState(
-            {},
-            document.title,
-            window.location.pathname,
-          );
+          // Redirect to home page with hard refresh
+          // This ensures middleware runs with updated cookies
+          console.log("Redirecting to home page...");
+          window.location.href = "/";
         } else {
-          console.error(`${provider} auth failed: Missing user_id or salt`);
+          console.error(`${provider} auth failed: Missing required data`);
+          throw new Error("Invalid response from authentication server");
         }
       } catch (err) {
         console.error(`${provider} sign-in error:`, err);
+        // Clear any partial data
+        clearAllZkLoginData();
+        clearAuthCookies();
+        setAuthData(null);
       } finally {
-        setIsAuthLoading(false);
+        setIsLoading(false);
       }
     }
-  }, [setUserId, setSalt]);
-
-  const isLoading = isLoadingUserId || isLoadingSalt || isAuthLoading;
-
-  const authData: AuthData | null =
-    userId && salt ? { user_id: userId, salt: salt } : null;
+  }, []);
 
   // Generic Sign In - redirects to OAuth provider
   const signIn = async (provider: AuthProvider) => {
     try {
       console.log(`Initiating ${provider} sign in...`);
-
-      // Optional: Get nonce from storage if needed
-      // const nonce = localStorage.getItem("auth_nonce");
-
       redirectToAuthorization(provider);
     } catch (error) {
       console.error(`${provider} sign in error:`, error);
+      throw error;
     }
   };
 
-  // Sign Out
+  // Sign Out - clears all zkLogin data
   const signOut = async () => {
     try {
       if (typeof window === "undefined") return;
 
-      localStorage.removeItem("user_id");
-      localStorage.removeItem("salt");
+      // Clear all zkLogin data (both sessionStorage and localStorage)
+      clearAllZkLoginData();
 
-      setUserId(null);
-      setSalt(null);
+      // Clear auth cookies for middleware
+      clearAuthCookies();
+
+      // Update state
+      setAuthData(null);
 
       console.log("Sign out successful");
+      console.log("Cleared all zkLogin data from storage");
     } catch (error) {
       console.error("Sign out error:", error);
+      throw error;
     }
   };
 

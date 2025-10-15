@@ -2,23 +2,14 @@
 
 import { useSession } from "@/provider/AuthProvider";
 import { AuthProvider } from "@/types/auth";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 export default function LoginPage() {
-  const { signIn, authData, isLoading } = useSession();
-  const router = useRouter();
-
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (authData?.user_id) {
-      router.push("/dashboard"); // or wherever you want to redirect
-    }
-  }, [authData, router]);
+  const { signIn, isLoading } = useSession();
 
   const handleLogin = async (provider: AuthProvider) => {
     try {
       await signIn(provider);
+      // Middleware will handle redirect after successful login
     } catch (error) {
       console.error("Login failed:", error);
       // TODO: Show error message to user (toast, alert, etc.)
