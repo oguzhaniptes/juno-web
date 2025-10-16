@@ -36,6 +36,22 @@ export default function DashboardPage() {
       status: "Halftime",
     },
     {
+      sport: "football",
+      homeTeam: { name: "Chelsea", logo: "/images/chelsea_logo.png" },
+      awayTeam: { name: "Arsenal", logo: "/images/arsenal_logo.png" },
+      homeScore: 2,
+      awayScore: 1,
+      status: "Halftime",
+    },
+    {
+      sport: "football",
+      homeTeam: { name: "Chelsea", logo: "/images/chelsea_logo.png" },
+      awayTeam: { name: "Arsenal", logo: "/images/arsenal_logo.png" },
+      homeScore: 2,
+      awayScore: 1,
+      status: "Halftime",
+    },
+    {
       sport: "basketball",
       homeTeam: { name: "Lakers", logo: "/images/lakers_logo.png" },
       awayTeam: { name: "Celtics", logo: "/images/celtics_logo.png" },
@@ -158,7 +174,18 @@ export default function DashboardPage() {
               View all
             </a>
           </div>
-          <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+          <div
+            className="flex space-x-4 overflow-x-auto pb-4"
+            style={{
+              scrollbarWidth: "none",
+              overscrollBehavior: "contain",
+            }}
+            onWheel={(e) => {
+              e.preventDefault();
+              const container = e.currentTarget;
+              container.scrollLeft += e.deltaY;
+            }}
+          >
             {liveMatches.map((match, index) => (
               <LiveMatchCard
                 key={index}
