@@ -1,28 +1,9 @@
 "use client";
 
-import {
-  use,
-  createContext,
-  type PropsWithChildren,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
-import {
-  AuthData,
-  AuthProvider,
-  AuthProviderProps,
-  ChangeCodeForUserZkProvider,
-} from "@/types/auth";
+import { use, createContext, type PropsWithChildren, useState, useEffect, useCallback } from "react";
+import { AuthData, AuthProvider, AuthProviderProps, ChangeCodeForUserZkProvider } from "@/types/auth";
 import { redirectToAuthorization } from "@/constants/auth";
-import {
-  saveZkLoginData,
-  clearAllZkLoginData,
-  getPersistentData,
-  hasValidZkLoginSession,
-  syncAuthDataToCookies,
-  clearAuthCookies,
-} from "@/lib/storage";
+import { saveZkLoginData, clearAllZkLoginData, getPersistentData, hasValidZkLoginSession, syncAuthDataToCookies, clearAuthCookies } from "@/lib/storage";
 import { attachZkLoginDebugToWindow } from "@/lib/zklogin-debug";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
@@ -48,7 +29,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const [authData, setAuthData] = useState<AuthData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize authentication state from localStorage/sessionStorage
+  // Initialize authentication state from storage (allow login with persistent data only)
   const initializeAuthState = useCallback(() => {
     if (typeof window === "undefined") {
       setIsLoading(false);
@@ -56,14 +37,22 @@ export function SessionProvider({ children }: PropsWithChildren) {
     }
 
     try {
-      // Check if we have valid zkLogin session
-      if (hasValidZkLoginSession()) {
-        const persistentData = getPersistentData();
-        if (persistentData) {
-          setAuthData({
-            user_id: persistentData.user_id,
-            salt: persistentData.salt,
-          });
+      // Prefer ephemeral validity, but allow direct login when persistent data exists
+      const persistentData = getPersistentData();
+      if (persistentData) {
+        // Ensure cookies are in sync for middleware
+        syncAuthDataToCookies();
+        setAuthData({
+          user_id: persistentData.user_id,
+          salt: persistentData.salt,
+          max_epoch: persistentData.max_epoch,
+        });
+      } else if (hasValidZkLoginSession()) {
+        // Fallback: if only ephemeral indicates validity, still try to hydrate from persistent
+        const p = getPersistentData();
+        if (p) {
+          syncAuthDataToCookies();
+          setAuthData({ user_id: p.user_id, salt: p.salt, max_epoch: p.max_epoch });
         }
       }
     } catch (error) {
@@ -135,10 +124,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
           syncAuthDataToCookies();
 
           // Update auth state
-          setAuthData({
-            user_id: data.user_id,
-            salt: data.salt,
-          });
+          setAuthData({ user_id: data.user_id, salt: data.salt, max_epoch: getPersistentData()?.max_epoch ?? 0 });
 
           console.log(`${provider} auth successful!`);
           console.log("zkLogin data saved:");

@@ -28,9 +28,7 @@ export default async function middleware(request: NextRequest) {
 
   const hasAuthData = Boolean(userId && salt && maxEpoch);
 
-  console.log(
-    `[Middleware] Auth Status: ${hasAuthData ? "Authenticated" : "Not authenticated"}`,
-  );
+  console.log(`[Middleware] Auth Status: ${hasAuthData ? "Authenticated" : "Not authenticated"}`);
 
   // Check if it's a protected route
   const isProtectedRoute = protectedRoutes.some((route) => {

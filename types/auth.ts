@@ -27,6 +27,7 @@ export interface ChangeCodeForUserZkProvider {
 export interface AuthData {
   user_id: string;
   salt: string;
+  max_epoch: number;
 }
 
 // Ephemeral data stored in sessionStorage (per Sui SDK pattern)
