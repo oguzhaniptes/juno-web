@@ -18,7 +18,11 @@ export function useThemeManager() {
   const resolvedTheme: ResolvedTheme = theme === "system" ? (systemTheme as ResolvedTheme) || "light" : (theme as ResolvedTheme);
   const isDark = mounted ? resolvedTheme === "dark" : false;
 
-  const toggleTheme = () => setTheme(isDark ? "light" : "dark");
+  const toggleTheme = () => {
+    console.log("change", !isDark);
+
+    setTheme(isDark ? "light" : "dark");
+  };
 
   return { theme, setTheme, isDark, toggleTheme, mounted, resolvedTheme };
 }

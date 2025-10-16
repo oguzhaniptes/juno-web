@@ -27,7 +27,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-5xl mx-auto p-6">
         {/* Header */}
         <div className="bg-white rounded-lg shadow p-6 mb-6">

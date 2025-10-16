@@ -91,7 +91,7 @@ export default function CommunityPage() {
   ];
 
   const CommunityCard = ({ name, members, description, cover }: { name: string; members: number; description: string; cover: string }) => (
-    <div className="relative bg-white rounded-lg shadow-md border border-gray-200 p-4 flex">
+    <div className="relative bg-card rounded-lg shadow-md border border-gray-200 p-4 flex">
       <div className="flex-shrink-0 mr-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={cover} alt={name} className="h-16 w-16 rounded-lg object-cover bg-gray-100" />
@@ -110,7 +110,7 @@ export default function CommunityPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-5xl mx-auto p-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Communities</h1>
 

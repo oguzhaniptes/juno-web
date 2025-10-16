@@ -17,7 +17,7 @@ interface LiveMatchCardProps {
 
 const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ sport: _sport, homeTeam, awayTeam, homeScore, awayScore, status }) => {
   return (
-    <div className="flex-none w-72 bg-white rounded-lg shadow-md p-4 relative overflow-hidden border border-gray-200">
+    <div className="flex-none w-80 bg-card rounded-2xl shadow-md p-4 relative overflow-hidden border border-gray-200">
       {/* Live Indicator */}
       <span className="absolute top-2 right-2 flex items-center text-red-600 text-xs font-semibold">
         <span className="relative flex h-2 w-2 mr-1">

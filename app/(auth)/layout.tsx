@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Sidebar from "@/component/SideBar";
+import { ThemeProvider } from "next-themes";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -12,11 +13,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   const mainContentMarginClass = isExpanded ? "ml-64" : "ml-16"; // Corresponds to w-64 and w-16
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
-      <Sidebar isExpanded={isExpanded} setIsExpanded={setIsExpanded} collapsedWidth={collapsedWidthClass} expandedWidth={expandedWidthClass} />
-      <main className={`flex-1 overflow-auto ${mainContentMarginClass}`}>
-        <div className="p-6">{children}</div>
-      </main>
-    </div>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <div className="flex">
+        <Sidebar isExpanded={isExpanded} setIsExpanded={setIsExpanded} collapsedWidth={collapsedWidthClass} expandedWidth={expandedWidthClass} />
+        <main className={`flex-1 overflow-auto ${mainContentMarginClass}`}>
+          <div className="p-6 bg-white dark:bg-black">{children}</div>
+        </main>
+      </div>
+    </ThemeProvider>
   );
 }

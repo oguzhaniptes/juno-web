@@ -1,26 +1,97 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light Mode Base Colors */
+  --background: #f5f5f7;
+  --foreground: #1a1a1a;
+
+  /* Card & Surface Colors */
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+
+  /* Primary Purple */
+  --primary: #8b5cf6;
+  --primary-foreground: #ffffff;
+
+  /* Secondary Pink/Red */
+  --secondary: #ec4899;
+  --secondary-foreground: #ffffff;
+
+  /* Accent Orange */
+  --accent: #f97316;
+  --accent-foreground: #ffffff;
+
+  /* Muted Colors */
+  --muted: #e5e5e5;
+  --muted-foreground: #737373;
+
+  /* Border */
+  --border: #d4d4d4;
+
+  /* Radius */
+  --radius: 1rem;
+
+  /* Gradient Colors for Light Mode */
+  --gradient-purple-start: #a855f7;
+  --gradient-purple-end: #8b5cf6;
+  --gradient-pink-start: #ec4899;
+  --gradient-pink-end: #f43f5e;
+  --gradient-orange-start: #fb923c;
+  --gradient-orange-end: #f97316;
+}
+
+.dark {
+  /* Dark Mode Base Colors */
+  --background: #0f0a1f;
+  --foreground: #ededed;
+
+  /* Card & Surface Colors */
+  --card: #1a1433;
+  --card-foreground: #ededed;
+
+  /* Primary Purple */
+  --primary: #a855f7;
+  --primary-foreground: #ffffff;
+
+  /* Secondary Pink/Red */
+  --secondary: #f43f5e;
+  --secondary-foreground: #ffffff;
+
+  /* Accent Orange */
+  --accent: #fb923c;
+  --accent-foreground: #ffffff;
+
+  /* Muted Colors */
+  --muted: #2a2240;
+  --muted-foreground: #a1a1aa;
+
+  /* Border */
+  --border: #352d4f;
+
+  /* Gradient Colors for Dark Mode */
+  --gradient-purple-start: #8b5cf6;
+  --gradient-purple-end: #6d28d9;
+  --gradient-pink-start: #ec4899;
+  --gradient-pink-end: #db2777;
+  --gradient-orange-start: #fb923c;
+  --gradient-orange-end: #ea580c;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-card: var(--card);
+  --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
 }

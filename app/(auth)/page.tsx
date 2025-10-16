@@ -7,6 +7,9 @@ import { useEffect } from "react";
 import LiveMatchCard from "@/component/LiveMatchCard";
 import PostCard from "@/component/PostCard";
 import AdCard from "@/component/AdCard";
+import ProfileHeader from "@/component/ProfileHeader";
+import NewsCard from "@/component/NewsCard";
+import { Separator } from "@/component/ui/Separator";
 
 export default function DashboardPage() {
   const { authData, isLoading } = useSession();
@@ -154,28 +157,21 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen">
+      <div className="space-y-8 max-w-3xl lg:max-w-5xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Main</h1>
-              <p className="text-gray-600 mt-1">Welcome back!</p>
-            </div>
-          </div>
-        </div>
+        <ProfileHeader />
 
         {/* Active Matches */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Active Matches</h2>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Active Matches</h2>
             <a href="/matches" className="text-blue-600 hover:underline text-sm font-medium">
               View all
             </a>
           </div>
           <div
-            className="flex space-x-4 overflow-x-auto pb-4"
+            className="flex space-x-4 overflow-x-auto py-4"
             style={{
               scrollbarWidth: "none",
               overscrollBehavior: "contain",
@@ -208,9 +204,55 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        <Separator className="h-0.5 rounded-full" />
         {/* Main Feed */}
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Latest Feed</h2>
+        <div>
+          {/* <h2 className="text-md font-bold text-gray-900 dark:text-white mb-4">Latest Feed</h2> */}
+          <div className="space-y-4">
+            {feedItems.map((item) => {
+              if (item.type === "news") {
+                return (
+                  <NewsCard
+                    key={item.id}
+                    type="news"
+                    category={item.category || ""}
+                    title={item.title || ""}
+                    content={item.content || ""}
+                    imageUrl={item.imageUrl || ""}
+                    likes={item.likes || 0}
+                    comments={item.comments || 0}
+                    shares={item.shares || 0}
+                  />
+                );
+              } else if (item.type === "user-post") {
+                return (
+                  <PostCard
+                    key={item.id}
+                    type="user-post"
+                    authorAvatarUrl={""}
+                    category={item.category || ""}
+                    content={item.content || ""}
+                    imageUrl={item.imageUrl || ""}
+                    likes={item.likes || 0}
+                    comments={item.comments || 0}
+                    shares={item.shares || 0}
+                  />
+                );
+              } else if (item.type === "ad") {
+                return (
+                  <AdCard
+                    key={item.id}
+                    title={item.title || ""}
+                    description={item.description || ""}
+                    imageUrl={item.imageUrl || ""}
+                    ctaText={item.ctaText || ""}
+                    ctaLink={item.ctaLink || ""}
+                  />
+                );
+              }
+              return null;
+            })}
+          </div>
           <div className="space-y-4">
             {feedItems.map((item) => {
               if (item.type === "news") {
