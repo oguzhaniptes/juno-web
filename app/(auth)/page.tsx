@@ -157,148 +157,99 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="space-y-8 max-w-3xl lg:max-w-5xl mx-auto">
-        {/* Header */}
-        <ProfileHeader />
+    <div className="space-y-6">
+      {/* Header */}
+      <ProfileHeader />
 
-        {/* Active Matches */}
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Active Matches</h2>
-            <a href="/matches" className="text-blue-600 hover:underline text-sm font-medium">
-              View all
+      {/* Active Matches */}
+      <div className="space-y-2">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Active Matches</h2>
+          <a href="/matches" className="text-blue-600 hover:underline text-sm font-medium">
+            View all
+          </a>
+        </div>
+        <div
+          className="flex space-x-4 overflow-x-auto py-2"
+          style={{
+            scrollbarWidth: "none",
+            overscrollBehavior: "contain",
+          }}
+          onWheel={(e) => {
+            e.preventDefault();
+            const container = e.currentTarget;
+            container.scrollLeft += e.deltaY;
+          }}
+        >
+          {liveMatches.map((match, index) => (
+            <LiveMatchCard
+              key={index}
+              sport={match.sport}
+              homeTeam={match.homeTeam}
+              awayTeam={match.awayTeam}
+              homeScore={match.homeScore}
+              awayScore={match.awayScore}
+              status={match.status}
+            />
+          ))}
+          <div className="flex-none w-24 flex items-center justify-center">
+            <a href="/matches" className="flex flex-col items-center justify-center text-blue-600 hover:text-blue-700 transition-colors">
+              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 9l3 3m0 0l-3 3m0-6l-3 3m-3-3l3 3m0 0l-3 3" />
+              </svg>
+              <span className="text-sm mt-1 font-medium">More Matches</span>
             </a>
           </div>
-          <div
-            className="flex space-x-4 overflow-x-auto py-4"
-            style={{
-              scrollbarWidth: "none",
-              overscrollBehavior: "contain",
-            }}
-            onWheel={(e) => {
-              e.preventDefault();
-              const container = e.currentTarget;
-              container.scrollLeft += e.deltaY;
-            }}
-          >
-            {liveMatches.map((match, index) => (
-              <LiveMatchCard
-                key={index}
-                sport={match.sport}
-                homeTeam={match.homeTeam}
-                awayTeam={match.awayTeam}
-                homeScore={match.homeScore}
-                awayScore={match.awayScore}
-                status={match.status}
-              />
-            ))}
-            <div className="flex-none w-24 flex items-center justify-center">
-              <a href="/matches" className="flex flex-col items-center justify-center text-blue-600 hover:text-blue-700 transition-colors">
-                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 9l3 3m0 0l-3 3m0-6l-3 3m-3-3l3 3m0 0l-3 3" />
-                </svg>
-                <span className="text-sm mt-1 font-medium">More Matches</span>
-              </a>
-            </div>
-          </div>
         </div>
+      </div>
 
-        <Separator className="h-0.5 rounded-full" />
-        {/* Main Feed */}
-        <div>
-          {/* <h2 className="text-md font-bold text-gray-900 dark:text-white mb-4">Latest Feed</h2> */}
-          <div className="space-y-4">
-            {feedItems.map((item) => {
-              if (item.type === "news") {
-                return (
-                  <NewsCard
-                    key={item.id}
-                    type="news"
-                    category={item.category || ""}
-                    title={item.title || ""}
-                    content={item.content || ""}
-                    imageUrl={item.imageUrl || ""}
-                    likes={item.likes || 0}
-                    comments={item.comments || 0}
-                    shares={item.shares || 0}
-                  />
-                );
-              } else if (item.type === "user-post") {
-                return (
-                  <PostCard
-                    key={item.id}
-                    type="user-post"
-                    authorAvatarUrl={""}
-                    category={item.category || ""}
-                    content={item.content || ""}
-                    imageUrl={item.imageUrl || ""}
-                    likes={item.likes || 0}
-                    comments={item.comments || 0}
-                    shares={item.shares || 0}
-                  />
-                );
-              } else if (item.type === "ad") {
-                return (
-                  <AdCard
-                    key={item.id}
-                    title={item.title || ""}
-                    description={item.description || ""}
-                    imageUrl={item.imageUrl || ""}
-                    ctaText={item.ctaText || ""}
-                    ctaLink={item.ctaLink || ""}
-                  />
-                );
-              }
-              return null;
-            })}
-          </div>
-          <div className="space-y-4">
-            {feedItems.map((item) => {
-              if (item.type === "news") {
-                return (
-                  <PostCard
-                    key={item.id}
-                    type="news"
-                    category={item.category || ""}
-                    title={item.title || ""}
-                    content={item.content || ""}
-                    imageUrl={item.imageUrl || ""}
-                    likes={item.likes || 0}
-                    comments={item.comments || 0}
-                    shares={item.shares || 0}
-                  />
-                );
-              } else if (item.type === "user-post") {
-                return (
-                  <PostCard
-                    key={item.id}
-                    type="user-post"
-                    authorAvatarUrl={""}
-                    category={item.category || ""}
-                    content={item.content || ""}
-                    imageUrl={item.imageUrl || ""}
-                    likes={item.likes || 0}
-                    comments={item.comments || 0}
-                    shares={item.shares || 0}
-                  />
-                );
-              } else if (item.type === "ad") {
-                return (
-                  <AdCard
-                    key={item.id}
-                    title={item.title || ""}
-                    description={item.description || ""}
-                    imageUrl={item.imageUrl || ""}
-                    ctaText={item.ctaText || ""}
-                    ctaLink={item.ctaLink || ""}
-                  />
-                );
-              }
-              return null;
-            })}
-          </div>
+      <div className="space-y-2">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Feed</h2>
         </div>
+        {feedItems.map((item) => {
+          if (item.type === "news") {
+            return (
+              <PostCard
+                key={item.id}
+                type="news"
+                category={item.category || ""}
+                title={item.title || ""}
+                content={item.content || ""}
+                imageUrl={item.imageUrl || ""}
+                likes={item.likes || 0}
+                comments={item.comments || 0}
+                shares={item.shares || 0}
+              />
+            );
+          } else if (item.type === "user-post") {
+            return (
+              <PostCard
+                key={item.id}
+                type="user-post"
+                authorAvatarUrl={""}
+                category={item.category || ""}
+                content={item.content || ""}
+                imageUrl={item.imageUrl || ""}
+                likes={item.likes || 0}
+                comments={item.comments || 0}
+                shares={item.shares || 0}
+              />
+            );
+          } else if (item.type === "ad") {
+            return (
+              <AdCard
+                key={item.id}
+                title={item.title || ""}
+                description={item.description || ""}
+                imageUrl={item.imageUrl || ""}
+                ctaText={item.ctaText || ""}
+                ctaLink={item.ctaLink || ""}
+              />
+            );
+          }
+          return null;
+        })}
       </div>
     </div>
   );

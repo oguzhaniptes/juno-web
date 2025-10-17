@@ -110,52 +110,50 @@ export default function CommunityPage() {
   );
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-5xl mx-auto p-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Communities</h1>
+    <div>
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">Communities</h1>
 
-        <section className="mb-8">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-xl font-semibold text-gray-900">Your communities ({userCommunities.length})</h2>
-            <button onClick={() => setShowAllUserCommunities((v) => !v)} className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              {showAllUserCommunities ? "Show less" : "See all"}
-            </button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {(showAllUserCommunities ? userCommunities : userCommunities.slice(0, 4)).map((c) => (
-              <CommunityCard key={c.id} name={c.name} members={c.members} description={c.description} cover={c.cover} />
-            ))}
-          </div>
-        </section>
+      <section className="mb-8">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xl font-semibold text-gray-900">Your communities ({userCommunities.length})</h2>
+          <button onClick={() => setShowAllUserCommunities((v) => !v)} className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+            {showAllUserCommunities ? "Show less" : "See all"}
+          </button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {(showAllUserCommunities ? userCommunities : userCommunities.slice(0, 4)).map((c) => (
+            <CommunityCard key={c.id} name={c.name} members={c.members} description={c.description} cover={c.cover} />
+          ))}
+        </div>
+      </section>
 
-        <section className="mb-8">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-xl font-semibold text-gray-900">Active match communities</h2>
-            <a href="/community" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              Explore more
-            </a>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {activeMatchCommunities.map((c) => (
-              <CommunityCard key={c.id} name={c.name} members={c.members} description={c.description} cover={c.cover} />
-            ))}
-          </div>
-        </section>
+      <section className="mb-8">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xl font-semibold text-gray-900">Active match communities</h2>
+          <a href="/community" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+            Explore more
+          </a>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {activeMatchCommunities.map((c) => (
+            <CommunityCard key={c.id} name={c.name} members={c.members} description={c.description} cover={c.cover} />
+          ))}
+        </div>
+      </section>
 
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-xl font-semibold text-gray-900">Suggested communities</h2>
-            <a href="/community" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              Explore more
-            </a>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {suggestedCommunities.map((c) => (
-              <CommunityCard key={c.id} name={c.name} members={c.members} description={c.description} cover={c.cover} />
-            ))}
-          </div>
-        </section>
-      </div>
+      <section>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xl font-semibold text-gray-900">Suggested communities</h2>
+          <a href="/community" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+            Explore more
+          </a>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {suggestedCommunities.map((c) => (
+            <CommunityCard key={c.id} name={c.name} members={c.members} description={c.description} cover={c.cover} />
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

@@ -1,23 +1,31 @@
 "use client";
 
-import { useState } from "react";
-import Sidebar from "@/component/SideBar";
+import Sidebar from "@/component/sidebar/SideBar";
 import { ThemeProvider } from "next-themes";
+import { useSidebar } from "@/hooks/use-sidebar";
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
-  const [isExpanded, setIsExpanded] = useState(true);
-  const collapsedWidthClass = "w-16"; // corresponds to the Sidebar's collapsed width (64px)
-  const expandedWidthClass = "w-64"; // corresponds to the Sidebar's expanded width (256px)
+export default function Layout({ children }: { children: React.ReactNode }) {
+  const sidebarControls = useSidebar();
 
-  // Use dynamic margin-left on the main content to push it away from the fixed sidebar
-  const mainContentMarginClass = isExpanded ? "ml-64" : "ml-16"; // Corresponds to w-64 and w-16
+  if (!sidebarControls.isMounted) {
+    return (
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <div className="flex bg-background">
+          <div className="w-64 h-screen bg-muted" />
+          <main className="flex-1 ml-64" />
+        </div>
+      </ThemeProvider>
+    );
+  }
+
+  const mainContentMarginClass = sidebarControls.isExpanded ? "ml-64" : "ml-16";
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <div className="flex">
-        <Sidebar isExpanded={isExpanded} setIsExpanded={setIsExpanded} collapsedWidth={collapsedWidthClass} expandedWidth={expandedWidthClass} />
-        <main className={`flex-1 overflow-auto ${mainContentMarginClass}`}>
-          <div className="p-6 bg-white dark:bg-black">{children}</div>
+      <div className="flex bg-background text-foreground">
+        <Sidebar {...sidebarControls} />
+        <main className={`flex-1 overflow-auto min-h-screen transition-all duration-300 ${mainContentMarginClass}`}>
+          <div className="container max-w-4xl mx-auto p-8 mt-8">{children}</div>
         </main>
       </div>
     </ThemeProvider>

@@ -18,7 +18,7 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ type, category, title, content, imageUrl, authorAvatarUrl, likes, comments, shares }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-4 border border-gray-200">
-      <div className="flex flex-col items-start justify-center gap-2">
+      <div className="flex flex-col items-start justify-center gap-4">
         <div className="flex flex-row gap-2">
           <ProfileAvatar isHaveProfileNft={false} size="sm" />
           <div className="flex flex-col justify-center">

@@ -50,87 +50,82 @@ export default function AwardsPage() {
   ];
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-5xl mx-auto p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Awards</h1>
-          <div className="inline-flex rounded-lg border border-gray-200 bg-white p-0.5">
-            <button
-              onClick={() => setTab("current")}
-              className={`px-4 py-2 text-sm rounded-md ${tab === "current" ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"}`}
-            >
-              Current
-            </button>
-            <button
-              onClick={() => setTab("lastWeek")}
-              className={`px-4 py-2 text-sm rounded-md ${tab === "lastWeek" ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"}`}
-            >
-              Last week
-            </button>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-gray-900">Awards</h1>
+        <div className="inline-flex rounded-lg border border-gray-200 bg-white p-0.5">
+          <button onClick={() => setTab("current")} className={`px-4 py-2 text-sm rounded-md ${tab === "current" ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"}`}>
+            Current
+          </button>
+          <button
+            onClick={() => setTab("lastWeek")}
+            className={`px-4 py-2 text-sm rounded-md ${tab === "lastWeek" ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"}`}
+          >
+            Last week
+          </button>
+        </div>
+      </div>
+
+      {/* Podium */}
+      <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+        <div className="grid grid-cols-3 items-end gap-4">
+          {/* Silver - left */}
+          <div className="flex flex-col items-center justify-end">
+            <div className="relative flex flex-col items-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={top3[1].avatar} alt={top3[1].name} className={`rounded-full object-cover ring-4 ${tierStyles[1].ring} ${tierStyles[1].avatar}`} />
+              <span className="mt-2 text-sm font-semibold text-gray-700">{top3[1].name}</span>
+              <div className="text-xs text-gray-500">
+                ${top3[1].earningsUsd.toLocaleString()} • {top3[1].points} pts
+              </div>
+            </div>
+            <div className={`mt-3 w-full ${tierStyles[1].height} ${tierStyles[1].color} rounded-md`}></div>
+          </div>
+
+          {/* Gold - center */}
+          <div className="flex flex-col items-center justify-end">
+            <div className="relative flex flex-col items-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={top3[0].avatar} alt={top3[0].name} className={`rounded-full object-cover ring-4 ${tierStyles[0].ring} ${tierStyles[0].avatar}`} />
+              <span className="mt-2 text-base font-bold text-gray-900">{top3[0].name}</span>
+              <div className="text-sm text-gray-700 font-medium">
+                ${top3[0].earningsUsd.toLocaleString()} • {top3[0].points} pts
+              </div>
+            </div>
+            <div className={`mt-3 w-full ${tierStyles[0].height} ${tierStyles[0].color} rounded-md`}></div>
+          </div>
+
+          {/* Bronze - right */}
+          <div className="flex flex-col items-center justify-end">
+            <div className="relative flex flex-col items-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={top3[2].avatar} alt={top3[2].name} className={`rounded-full object-cover ring-4 ${tierStyles[2].ring} ${tierStyles[2].avatar}`} />
+              <span className="mt-2 text-sm font-semibold text-gray-700">{top3[2].name}</span>
+              <div className="text-xs text-gray-500">
+                ${top3[2].earningsUsd.toLocaleString()} • {top3[2].points} pts
+              </div>
+            </div>
+            <div className={`mt-3 w-full ${tierStyles[2].height} ${tierStyles[2].color} rounded-md`}></div>
           </div>
         </div>
+      </div>
 
-        {/* Podium */}
-        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 mb-6">
-          <div className="grid grid-cols-3 items-end gap-4">
-            {/* Silver - left */}
-            <div className="flex flex-col items-center justify-end">
-              <div className="relative flex flex-col items-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={top3[1].avatar} alt={top3[1].name} className={`rounded-full object-cover ring-4 ${tierStyles[1].ring} ${tierStyles[1].avatar}`} />
-                <span className="mt-2 text-sm font-semibold text-gray-700">{top3[1].name}</span>
+      {/* Ranks 4+ */}
+      <div className="bg-white rounded-lg shadow-md border border-gray-200">
+        <div className="divide-y divide-gray-100">
+          {rest.map((u, idx) => (
+            <div key={u.id} className="flex items-center p-4">
+              <div className="w-10 text-sm font-semibold text-gray-500">{idx + 4}</div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={u.avatar} alt={u.name} className="h-10 w-10 rounded-full object-cover" />
+              <div className="ml-3 flex-1">
+                <div className="text-sm font-medium text-gray-900">{u.name}</div>
                 <div className="text-xs text-gray-500">
-                  ${top3[1].earningsUsd.toLocaleString()} • {top3[1].points} pts
+                  ${u.earningsUsd.toLocaleString()} • {u.points} pts
                 </div>
               </div>
-              <div className={`mt-3 w-full ${tierStyles[1].height} ${tierStyles[1].color} rounded-md`}></div>
             </div>
-
-            {/* Gold - center */}
-            <div className="flex flex-col items-center justify-end">
-              <div className="relative flex flex-col items-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={top3[0].avatar} alt={top3[0].name} className={`rounded-full object-cover ring-4 ${tierStyles[0].ring} ${tierStyles[0].avatar}`} />
-                <span className="mt-2 text-base font-bold text-gray-900">{top3[0].name}</span>
-                <div className="text-sm text-gray-700 font-medium">
-                  ${top3[0].earningsUsd.toLocaleString()} • {top3[0].points} pts
-                </div>
-              </div>
-              <div className={`mt-3 w-full ${tierStyles[0].height} ${tierStyles[0].color} rounded-md`}></div>
-            </div>
-
-            {/* Bronze - right */}
-            <div className="flex flex-col items-center justify-end">
-              <div className="relative flex flex-col items-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={top3[2].avatar} alt={top3[2].name} className={`rounded-full object-cover ring-4 ${tierStyles[2].ring} ${tierStyles[2].avatar}`} />
-                <span className="mt-2 text-sm font-semibold text-gray-700">{top3[2].name}</span>
-                <div className="text-xs text-gray-500">
-                  ${top3[2].earningsUsd.toLocaleString()} • {top3[2].points} pts
-                </div>
-              </div>
-              <div className={`mt-3 w-full ${tierStyles[2].height} ${tierStyles[2].color} rounded-md`}></div>
-            </div>
-          </div>
-        </div>
-
-        {/* Ranks 4+ */}
-        <div className="bg-white rounded-lg shadow-md border border-gray-200">
-          <div className="divide-y divide-gray-100">
-            {rest.map((u, idx) => (
-              <div key={u.id} className="flex items-center p-4">
-                <div className="w-10 text-sm font-semibold text-gray-500">{idx + 4}</div>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={u.avatar} alt={u.name} className="h-10 w-10 rounded-full object-cover" />
-                <div className="ml-3 flex-1">
-                  <div className="text-sm font-medium text-gray-900">{u.name}</div>
-                  <div className="text-xs text-gray-500">
-                    ${u.earningsUsd.toLocaleString()} • {u.points} pts
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
     </div>

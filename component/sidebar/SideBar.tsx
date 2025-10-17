@@ -1,65 +1,52 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useThemeManager } from "@/hooks/use-theme-manager";
-import { Awards, Community, Home, Debug, Profile, Notification, Settings } from "@/component/icons";
+import { Settings } from "@/component/icons";
+import { UseSidebarReturn } from "@/hooks/use-sidebar";
+import { MENU_ITEMS } from ".";
 
-interface SidebarProps {
-  isExpanded: boolean;
-  setIsExpanded: (expanded: boolean) => void;
-  collapsedWidth: string;
-  expandedWidth: string;
-}
+type SidebarProps = UseSidebarReturn;
 
-export default function Sidebar({ isExpanded, setIsExpanded, collapsedWidth, expandedWidth }: SidebarProps) {
-  const pathname = usePathname();
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+export default function Sidebar({ isExpanded, isSettingsOpen, pathname, sidebarWidthClass, toggleSidebar, openSettingsModal, closeSettingsModal }: SidebarProps) {
+  const [notificationCount, setNotificationCount] = useState<number>(0);
 
-  const menuItems = [
-    {
-      name: "Home",
-      path: "/",
-      icon: Home(),
-    },
-    {
-      name: "Awards",
-      path: "/awards",
-      icon: Awards(),
-    },
-    {
-      name: "Community",
-      path: "/community",
-      icon: Community(),
-    },
-    {
-      name: "Profile",
-      path: "/profile",
-      icon: Profile(),
-    },
-    {
-      name: "Debug",
-      path: "/debug",
-      icon: Debug(),
-    },
-    {
-      name: "Notification",
-      path: "none",
-      icon: Notification(),
-    },
-  ];
+  useEffect(() => {
+    // Bu fonksiyon, backend'inizden bildirim sayısını alacak.
+    const fetchNotifications = async () => {
+      try {
+        // Örnek: API'den veri çekme simülasyonu
+        // Gerçekte buraya fetch('/api/notifications/count') gibi bir istek atacaksınız.
+        // const response = await new Promise<number>(resolve => setTimeout(() => resolve(5), 1000));
+        setNotificationCount(12);
+      } catch (error) {
+        console.error("Bildirimler alınamadı:", error);
+      }
+    };
+
+    // Bileşen ilk yüklendiğinde fonksiyonu çalıştır.
+    fetchNotifications();
+  }, []);
+
+  const menuItems = useMemo(() => {
+    return MENU_ITEMS.map((item) => {
+      if (item.name === "Notification") {
+        // Notification elemanını bul ve notificationCount değerini dinamik olarak ata
+        return { ...item, notificationCount: notificationCount };
+      }
+      return item;
+    });
+  }, [notificationCount]);
 
   return (
     <div
-      className={`fixed h-screen top-0 left-0 z-50 shadow border-r-2 bg-white dark:bg-black border-gray-300 dark:border-gray-800 transition-all duration-300 flex flex-col ${
-        isExpanded ? expandedWidth : collapsedWidth
-      }`}
+      className={`fixed h-screen top-0 left-0 z-50 shadow border-r-2 bg-white dark:bg-black border-gray-300 dark:border-gray-800 transition-all duration-300 flex flex-col ${sidebarWidthClass}`}
     >
       {/* Settings Modal */}
-      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      <SettingsModal isOpen={isSettingsOpen} onClose={closeSettingsModal} />
 
-      <button onClick={() => setIsExpanded(!isExpanded)} className={`absolute top-4 z-10 p-2 rounded-lg bg-card transition-all ${isExpanded ? "right-2" : "-right-12"}`}>
+      <button onClick={toggleSidebar} className={`absolute top-4 z-10 p-2 rounded-lg bg-card transition-all ${isExpanded ? "right-2" : "-right-12"}`}>
         <svg
           className="w-4 h-4 text-foreground transition-transform duration-300"
           style={{ transform: isExpanded ? "rotate(0deg)" : "rotate(180deg)" }}
@@ -86,6 +73,8 @@ export default function Sidebar({ isExpanded, setIsExpanded, collapsedWidth, exp
       <nav className="flex-1 p-2 space-y-1 overflow-y-auto overflow-x-hidden">
         {menuItems.map((item) => {
           const isActive = pathname === item.path;
+          const hasNotification = item.notificationCount && item.notificationCount > 0;
+
           return (
             <Link
               key={item.path}
@@ -95,7 +84,14 @@ export default function Sidebar({ isExpanded, setIsExpanded, collapsedWidth, exp
               } ${!isExpanded && "justify-center"}`}
               title={!isExpanded ? item.name : undefined}
             >
-              <div className="flex-shrink-0">{item.icon}</div>
+              <div className="relative flex-shrink-0">
+                {item.icon}
+                {hasNotification && (
+                  <span className="absolute flex w-4 h-4 items-center justify-center -top-1 -right-1 rounded-full text-[10px] font-bold text-amber-50 bg-red-500 ...">
+                    {item.notificationCount! > 9 ? "9+" : item.notificationCount}
+                  </span>
+                )}
+              </div>
               {isExpanded && <span className="font-medium whitespace-nowrap overflow-hidden text-ellipsis">{item.name}</span>}
 
               {/* Tooltip for collapsed state */}
@@ -113,7 +109,7 @@ export default function Sidebar({ isExpanded, setIsExpanded, collapsedWidth, exp
       <div className="p-2 flex-shrink-0">
         <button
           className={`flex items-center gap-3 px-3 py-2.5 w-full rounded-lg text-foreground hover:bg-muted transition-all group relative ${!isExpanded && "justify-center"}`}
-          onClick={() => setIsSettingsOpen(true)}
+          onClick={openSettingsModal}
           title={!isExpanded ? "Settings" : undefined}
         >
           <Settings />
