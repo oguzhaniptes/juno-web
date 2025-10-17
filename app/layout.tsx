@@ -25,12 +25,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <head />
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <SessionProvider>{children}</SessionProvider>
-        </body>
-      </html>
-    </ThemeProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

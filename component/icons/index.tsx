@@ -59,6 +59,7 @@ function Community() {
     </svg>
   );
 }
+
 function Profile() {
   return (
     <svg
@@ -78,6 +79,7 @@ function Profile() {
     </svg>
   );
 }
+
 function Notification() {
   return (
     <svg
@@ -97,6 +99,7 @@ function Notification() {
     </svg>
   );
 }
+
 function Settings() {
   return (
     <svg
@@ -116,6 +119,7 @@ function Settings() {
     </svg>
   );
 }
+
 function Debug() {
   return (
     <svg
@@ -145,9 +149,183 @@ function Debug() {
   );
 }
 
+function Coin({ className }: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`lucide lucide-circle-dollar-sign-icon lucide-circle-dollar-sign ${className || ""}`}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
+      <path d="M12 18V6" />
+    </svg>
+  );
+}
+
+function Diamond({ className }: IconProps) {
+  // Props'u 'className' olarak al
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24"
+      fill="none"
+      stroke="currentColor" // Rengi className'den alması için "currentColor" iyidir
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      // İşte sihirli kısım burası 👇
+      className={`lucide lucide-gem-icon lucide-gem ${className || ""}`}
+    >
+      <path d="M10.5 3 8 9l4 13 4-13-2.5-6" />
+      <path d="M17 3a2 2 0 0 1 1.6.8l3 4a2 2 0 0 1 .013 2.382l-7.99 10.986a2 2 0 0 1-3.247 0l-7.99-10.986A2 2 0 0 1 2.4 7.8l2.998-3.997A2 2 0 0 1 7 3z" />
+      <path d="M2 9h20" />
+    </svg>
+  );
+}
+
+function Heart({ className }: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`lucide lucide-heart-icon lucide-heart ${className || ""}`}
+    >
+      <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+    </svg>
+  );
+}
+
+function Share({ className }: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`lucide lucide-share2-icon lucide-share-2 ${className || ""}`}
+    >
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+      <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
+    </svg>
+  );
+}
+
+function Message({ className }: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`lucide lucide-message-square-icon lucide-message-square  ${className || ""} `}
+    >
+      <path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+
+function Eye({ className }: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`lucide lucide-eye-icon lucide-eye ${className || ""}`}
+    >
+      <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+function Chart({ className }: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`lucide lucide-chart-no-axes-column-icon lucide-chart-no-axes-column ${className || ""}`}
+    >
+      <path d="M5 21v-6" />
+      <path d="M12 21V3" />
+      <path d="M19 21V9" />
+    </svg>
+  );
+}
+
+type TailwindColors =
+  | "slate"
+  | "gray"
+  | "zinc"
+  | "neutral"
+  | "stone"
+  | "red"
+  | "orange"
+  | "amber"
+  | "yellow"
+  | "lime"
+  | "green"
+  | "emerald"
+  | "teal"
+  | "cyan"
+  | "sky"
+  | "blue"
+  | "indigo"
+  | "violet"
+  | "purple"
+  | "fuchsia"
+  | "pink"
+  | "rose";
+
+type TailwindShades = "50" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900" | "950";
+
+type TailwindColorClass = `text-${TailwindColors}-${TailwindShades}`;
+
 export interface IconProps {
-  color?: string;
+  className?: TailwindColorClass | string;
   filled?: boolean;
 }
 
-export { Home, Awards, Community, Profile, Notification, Settings, Debug };
+export { Home, Awards, Community, Profile, Notification, Settings, Debug, Coin, Diamond, Heart, Share, Message, Eye, Chart };
